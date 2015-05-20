@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -eux
+
+apt-get install -y python-pip && pip install charm-benchmark
+
+maxprime=`action-get max-prime`
+run=`date +%s`
+echo ${maxprime}
+
+mkdir -p /opt/sysbench/cpu/results/$run
+
+benchmark-start
+sysbench --test=cpu --cpu-max-prime=${maxprime} run > /opt/sysbench/cpu/results/$run/sysbench.log
+benchmark-finish
+
+# Parse the results
+`cat /opt/sysbench/cpu/results/$run/sysbench.log | python $CHARM_DIR/actions/cpu2json.py`

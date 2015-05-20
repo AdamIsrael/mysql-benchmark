@@ -1,0 +1,17 @@
+name: mysql-benchmark
+summary: Benchmark for mysql-compatible databases
+maintainer: Adam Israel <adam.israel@canonical.com>
+description: |
+  <Multi-line description here>
+tags:
+  # Replace "misc" with one or more whitelisted tags from this list:
+  # https://juju.ubuntu.com/docs/authors-charm-metadata.html#charm-metadata
+  - misc
+subordinate: true
+requires:
+  db:
+    interface: mysql
+    scope: container
+provides:
+  benchmark:
+    interface: benchmark
