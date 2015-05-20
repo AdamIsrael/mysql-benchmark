@@ -1,6 +1,28 @@
 fileio:
     description: file io
     params:
+        num-threads:
+            description: Tht total number of worker threads to create
+            type: integer
+            default: 1
+        max-requests:
+            description: Limit the total number of requests. 0 for unlimited.
+            type: integer
+            default: 10000
+        max-time:
+            description: Limit the total execution time, in seconds.
+            type: integer
+            default: 0
+        thread-stack-size:
+            description: Size of stack for each thread
+            type: string
+            default: "32K"
+        init-rnd:
+            description: |
+                Specify if the random numbers generator should be initialized from
+                timer before the test start
+            type: string
+            default: 'off'
         num:
             description: Number of blocks to create
             type: integer
@@ -52,6 +74,29 @@ fileio:
 cpu:
     description: CPU
     params:
+        num-threads:
+            description: Tht total number of worker threads to create
+            type: integer
+            default: 1
+        max-requests:
+            description: Limit the total number of requests. 0 for unlimited.
+            type: integer
+            default: 10000
+        max-time:
+            description: Limit the total execution time, in seconds.
+            type: integer
+            default: 0
+        thread-stack-size:
+            description: Size of stack for each thread
+            type: string
+            default: "32K"
+        init-rnd:
+            description: |
+                Specify if the random numbers generator should be initialized from
+                timer before the test start
+            type: string
+            default: 'off'
+
         max-prime:
             description: Upper limit for primes generator
             type: string

@@ -5,13 +5,24 @@ set -eux
 apt-get install -y python-pip && pip install charm-benchmark
 
 maxprime=`action-get max-prime`
+threads=`action-get num-threads`
+requests=`action-get max-requests`
+maxtime=`action-get max-time`
+stacksize=`action-get thread-stack-size`
+rnd=`action-get init-rnd`
+
+
 run=`date +%s`
-echo ${maxprime}
 
 mkdir -p /opt/sysbench/cpu/results/$run
 
 benchmark-start
-sysbench --test=cpu --cpu-max-prime=${maxprime} run > /opt/sysbench/cpu/results/$run/sysbench.log
+
+sysbench --test=cpu --cpu-max-prime=${maxprime} --num-threads=${threads} \
+--max-requests=${requests} --max-time=${maxtime} \
+--thread-stack-size=${stacksize} \
+run > /opt/sysbench/cpu/results/$run/sysbench.log
+
 benchmark-finish
 
 # Parse the results
