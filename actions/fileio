@@ -1,0 +1,35 @@
+#!/bin/bash
+
+set -eux
+
+num=`action-get num`
+bs=`action-get block-size`
+ts=`action-get total-size`
+tm=`action-get test-mode`
+io=`action-get io-mode`
+backlog=`action-get async-backlog`
+flags=`action-get extra-flags`
+ffreq=`action-get fsync-freq`
+fall=`action-get fsync-all`
+fend=`action-get fsync-end`
+fmode=`action-get fsync-mode`
+mr=`action-get merged-requests`
+ratio=`action-get rw-ratio`
+
+run=`date +%s`
+
+mkdir -p /opt/sysbench/fileio/results/$run
+
+benchmark-start
+
+sysbench --test=fileio --file-num=${num} --file-block-size=${bs} \
+--file-total-size=${ts} --file-test-mode=${tm} --file-io-mode=${io} \
+--file-extra-flags=${flags} \
+--file-fsync-freq=${ffreq} --file-fsync-all=${fall} --file-fsync-end=${fend} \
+ --file-fsync-mode=${fmode} --file-merged-requests=${mr} \
+ --file-rw-ratio=${ratio} run > /opt/sysbench/fileio/results/$run/sysbench.log
+
+benchmark-finish
+
+# Parse the results
+# `cat /opt/sysbench/fileio/results/$run/sysbench.log | python $CHARM_DIR/actions/fileio2json.py`
