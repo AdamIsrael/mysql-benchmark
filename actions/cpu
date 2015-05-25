@@ -2,8 +2,6 @@
 
 set -eux
 
-apt-get install -y python-pip && pip install charm-benchmark
-
 maxprime=`action-get max-prime`
 threads=`action-get num-threads`
 requests=`action-get max-requests`
