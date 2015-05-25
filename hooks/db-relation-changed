@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+from charmhelpers.core.hookenv import (
+    config,
+    relation_get
+)
+
+
+def db_relation_changed():
+    if relation_get('database') is None:
+        return 0
+
+    db_user = relation_get('user')
+    db_pass = relation_get('password')
+    db_name = relation_get('database')
+    db_host = relation_get('host')
+    db_port = relation_get('port')
+
+    cfg = config()
+
+    cfg['user'] = db_user
+    cfg['password'] = db_pass
+    cfg['database'] = db_name
+    cfg['host'] = db_host
+    cfg.save()
+
+
+if __name__ == "__main__":
+    db_relation_changed()
