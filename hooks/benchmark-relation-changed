@@ -3,4 +3,4 @@ set -eux
 
 apt-get install -y python-pip && pip install charm-benchmark
 
-benchmark-actions cpu fileio
+benchmark-actions cpu fileio oltp

@@ -1,0 +1,88 @@
+#!/bin/bash
+
+set -eux
+
+maxprime=`action-get max-prime`
+threads=`action-get num-threads`
+requests=`action-get max-requests`
+maxtime=`action-get max-time`
+stacksize=`action-get thread-stack-size`
+rnd=`action-get init-rnd`
+
+testmode=`action-get test-mode`
+readonly=`action-get read-only`
+rangesize=`action-get range-size`
+pointselects=`action-get point-selects`
+simpleranges=`action-get simple-ranges`
+sumranges=`action-get sum-ranges`
+orderranges=`action-get order-ranges`
+distinctranges=`action-get distinct-ranges`
+indexupdates=`action-get index-updates`
+nonindexupdates=`action-get non-index-updates`
+nontrxmode=`action-get nontrx-mode`
+connectdelay=`action-get connect-delay`
+userdelaymin=`action-get user-delay-min`
+userdelaymax=`action-get user-delay-max`
+tablename=`action-get table-name`
+tablesize=`action-get table-size`
+disttype=`action-get dist-type`
+distpct=`action-get dist-pct`
+distres=`action-get dist-res`
+dbpsmode=`action-get db-ps-mode`
+##
+mysqltableengine=`action-get mysql-table-engine`
+myisammaxrows=`action-get myisam-max-rows`
+mysqlcreateoptions=`action-get mysql-create-options`
+
+database=`cat .juju-persistent-config | shyaml get-value database`
+host=`cat .juju-persistent-config | shyaml get-value host`
+user=`cat .juju-persistent-config | shyaml get-value user`
+password=`cat .juju-persistent-config | shyaml get-value password`
+
+
+run=`date +%s`
+
+mkdir -p /opt/sysbench/oltp/results/$run
+
+
+sysbench --test=oltp --mysql-host=${host} --mysql-user=${user} \
+--mysql-db=${database} --mysql-password=${password} cleanup || true
+
+# Prepare the test
+sysbench --test=oltp --mysql-host=${host} --mysql-user=${user} \
+--mysql-db=${database} --mysql-password=${password} prepare
+
+
+
+# Run the test
+benchmark-start
+
+sysbench --test=oltp --oltp-test-mode=${testmode} --oltp-read-only=${readonly} \
+--oltp-range-size=${rangesize} --oltp-point-selects=${pointselects} \
+--oltp-simple-ranges=${simpleranges} --oltp-sum-ranges=${sumranges} \
+--oltp-order-ranges=${orderranges} --oltp-distinct-ranges=${distinctranges} \
+--oltp-index-updates=${indexupdates} \
+--oltp-non-index-updates=${nonindexupdates} --oltp-nontrx-mode=${nontrxmode} \
+--oltp-connect-delay=${connectdelay} --oltp-user-delay-min=${userdelaymin} \
+--oltp-user-delay-max=${userdelaymax} --oltp-table-name=${tablename} \
+--oltp-table-size=${tablesize} --oltp-dist-type=${disttype} \
+--oltp-dist-pct=${distpct} --oltp-dist-res=${distres} --db-ps-mode=${dbpsmode} \
+--mysql-host=${host} --mysql-user=${user} --mysql-db=${database} \
+--mysql-password=${password} --mysql-table-engine=${mysqltableengine} \
+--myisam-max-rows=${myisammaxrows} \
+--mysql-create-options=${mysqlcreateoptions} \
+run > /opt/sysbench/oltp/results/$run/sysbench.log
+
+# Simplified output for testing
+# sysbench --test=oltp --mysql-host=${host} --mysql-user=${user} \
+# --mysql-db=${database} --mysql-password=${password} \
+# run > /opt/sysbench/oltp/results/$run/sysbench.log
+
+benchmark-finish
+
+# Cleanup after the test
+sysbench --test=oltp --mysql-host=${host} --mysql-user=${user} \
+--mysql-db=${database} --mysql-password=${password} cleanup
+
+# Parse the results
+`cat /opt/sysbench/oltp/results/$run/sysbench.log | python $CHARM_DIR/actions/oltp2json.py`
