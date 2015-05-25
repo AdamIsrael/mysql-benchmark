@@ -38,11 +38,15 @@ fileio:
         test-mode:
             description: Test mode (seqwr, seqrewr, seqrd, rndrd, rndwr, rndrw)
             type: string
-            default: ""
+            default: "rndrw"
         io-mode:
             description: File operations mode (sync, async, fastmmap, slowmmap)
             type: string
             default: "sync"
+        async-backlog:
+            description: Number of asyncronous operations to queue per thread (only if io-mode=async)
+            type: integer
+            default: 128
         extra-flags:
             description: Additional flags to use on opening files (sync, dsync, direct)
             type: string
@@ -110,6 +114,120 @@ cpu:
 # mutex:
 #     description:
 #     params:
-# oltp:
-#     description:
-#     params:
+oltp:
+    description: Benchmark database performance
+    params:
+        num-threads:
+            description: Tht total number of worker threads to create
+            type: integer
+            default: 1
+        max-requests:
+            description: Limit the total number of requests. 0 for unlimited.
+            type: integer
+            default: 10000
+        max-time:
+            description: Limit the total execution time, in seconds.
+            type: integer
+            default: 0
+        thread-stack-size:
+            description: Size of stack for each thread
+            type: string
+            default: "32K"
+        init-rnd:
+            description: |
+                Specify if the random numbers generator should be initialized from
+                timer before the test start
+            type: string
+            default: 'off'
+        test-mode:
+            description: Execution mode - simple, complex (advanced transactional) and nontrx (non-transactional)
+            type: string
+            default: "complex"
+        read-only:
+            description: Read-only mode. No UPDATE, DELETE, or INSERT queries will be performed
+            type: boolean
+            default: False
+        range-size:
+            description: Range size for range queries.
+            type: integer
+            default: 100
+        point-selects:
+            description: Number of point select queries in a single transaction.
+            type: integer
+            default: 10
+        simple-ranges:
+            description: Number of simple range queries in a single transaction.
+            type: integer
+            default: 1
+        sum-ranges:
+            description: Number of SUM range queries in a single transaction.
+            type: integer
+            default: 1
+        order-ranges:
+            description: Number of ORDER range queries in a single transaction.
+            type: integer
+            default: 1
+        distinct-ranges:
+            description: Number of DISTINCT range queries in a single transaction.
+            type: integer
+            default: 1
+        index-updates:
+            description: Number of index UPDATE queries in a single transaction
+            type: integer
+            default: 1
+        non-index-updates:
+            description: Number of non-index UPDATE queries in a single transaction
+            type: integer
+            default: 1
+        nontrx-mode:
+            description: Type of queries for non-transactional execution mode - select, update_key, update_nokey, insert, delete
+            type: string
+            default: "select"
+        connect-delay:
+            description: Time in microseconds to sleep after each request
+            type: integer
+            default: 0
+        user-delay-min:
+            description: Minimum time in microseconds to sleep after each request
+            type: integer
+            default: 0
+        user-delay-max:
+            description: Maximum time in microseconds to sleep after each request
+            type: integer
+            default: 0
+        table-name:
+            description: Name of the test table
+            type: string
+            default: "sbtest"
+        table-size:
+            description: Number of rows in the test table
+            type: integer
+            default: 10000
+        dist-type:
+            description: Distribution of random numbers - uniform, gauss, or special
+            type: string
+            default: "special"
+        dist-pct:
+            description: Percentage of values to be treated as special (for special distribution)
+            type: integer
+            default: 1
+        dist-res:
+            description: Percentage of cases when 'special' values are generated (for special distribution)
+            type: integer
+            default: 75
+        db-ps-mode:
+            description: If the database driver supports Prepared Statements API, use server-side prepared statements for all queries where possible. Otherwise, client-side (or emulated) prepared statements will be used. This option allows you to force using emulation even when the PS API is available. Possible values are disable or auto.
+            type: string
+            default: 'auto'
+        mysql-table-engine:
+            description: The type of test table - myisam, innodb, heap, ndbcluster, bdb, maria, falcon, pbxt
+            type: string
+            default: innodb
+        myisam-max-rows:
+            description: MAX_ROWS option for MyISAM table (required for big tables)
+            type: string
+            default: "1000000"
+        mysql-create-options:
+            description: Additonal options passed to CREATE TABLE
+            type: string
+            default: ""
