@@ -2,5 +2,7 @@
 set -eux
 
 apt-get update
-apt-get install sysbench
-
+apt-get install -y sysbench python-pip
+pip install charmhelpers
+pip install charm-benchmark
+pip install shyaml
