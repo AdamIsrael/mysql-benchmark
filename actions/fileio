@@ -20,6 +20,26 @@ run=`date +%s`
 
 mkdir -p /opt/sysbench/fileio/results/$run
 
+
+cleanup() {
+    sysbench --test=fileio --file-num=${num} --file-block-size=${bs} \
+    --file-total-size=${ts} --file-test-mode=${tm} --file-io-mode=${io} \
+    --file-extra-flags=${flags} \
+    --file-fsync-freq=${ffreq} --file-fsync-all=${fall} --file-fsync-end=${fend} \
+    --file-fsync-mode=${fmode} --file-merged-requests=${mr} \
+    --file-rw-ratio=${ratio} cleanup
+}
+
+# Cleanup from a failed test run
+cleanup || true
+
+sysbench --test=fileio --file-num=${num} --file-block-size=${bs} \
+--file-total-size=${ts} --file-test-mode=${tm} --file-io-mode=${io} \
+--file-extra-flags=${flags} \
+--file-fsync-freq=${ffreq} --file-fsync-all=${fall} --file-fsync-end=${fend} \
+ --file-fsync-mode=${fmode} --file-merged-requests=${mr} \
+ --file-rw-ratio=${ratio} prepare
+
 benchmark-start
 
 sysbench --test=fileio --file-num=${num} --file-block-size=${bs} \
@@ -31,5 +51,7 @@ sysbench --test=fileio --file-num=${num} --file-block-size=${bs} \
 
 benchmark-finish
 
+cleanup
+
 # Parse the results
-# `cat /opt/sysbench/fileio/results/$run/sysbench.log | python $CHARM_DIR/actions/fileio2json.py`
+`cat /opt/sysbench/fileio/results/$run/sysbench.log | python $CHARM_DIR/actions/fileio2json.py`
