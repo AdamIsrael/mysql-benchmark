@@ -35,7 +35,6 @@ def parse_sysbench_output():
     results['avg.time'] = search(output, 'execution time (avg/stddev)')
 
     for key in results:
-        print "results.%s=%s" % (key, results[key])
         Benchmark.set_data({"results.%s" % key: results[key]})
 
     Benchmark.set_composite_score(results['95th'], '95th %', 'asc')

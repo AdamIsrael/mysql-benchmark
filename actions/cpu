@@ -9,7 +9,6 @@ maxtime=`action-get max-time`
 stacksize=`action-get thread-stack-size`
 rnd=`action-get init-rnd`
 
-
 run=`date +%s`
 
 mkdir -p /opt/sysbench/cpu/results/$run

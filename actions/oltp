@@ -44,14 +44,17 @@ run=`date +%s`
 
 mkdir -p /opt/sysbench/oltp/results/$run
 
+cleanup() {
+    sysbench --test=oltp --mysql-host=${host} --mysql-user=${user} \
+    --mysql-db=${database} --mysql-password=${password} cleanup
+}
 
-sysbench --test=oltp --mysql-host=${host} --mysql-user=${user} \
---mysql-db=${database} --mysql-password=${password} cleanup || true
+# Cleanup from a failed test run
+cleanup || true
 
 # Prepare the test
 sysbench --test=oltp --mysql-host=${host} --mysql-user=${user} \
 --mysql-db=${database} --mysql-password=${password} prepare
-
 
 
 # Run the test
@@ -73,16 +76,10 @@ sysbench --test=oltp --oltp-test-mode=${testmode} --oltp-read-only=${readonly} \
 --mysql-create-options=${mysqlcreateoptions} \
 run > /opt/sysbench/oltp/results/$run/sysbench.log
 
-# Simplified output for testing
-# sysbench --test=oltp --mysql-host=${host} --mysql-user=${user} \
-# --mysql-db=${database} --mysql-password=${password} \
-# run > /opt/sysbench/oltp/results/$run/sysbench.log
-
 benchmark-finish
 
 # Cleanup after the test
-sysbench --test=oltp --mysql-host=${host} --mysql-user=${user} \
---mysql-db=${database} --mysql-password=${password} cleanup
+cleanup
 
 # Parse the results
 `cat /opt/sysbench/oltp/results/$run/sysbench.log | python $CHARM_DIR/actions/oltp2json.py`
