@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -eux
+
+yields=`action-get yields`
+locks=`action-get locks`
+
+run=`date +%s`
+
+mkdir -p /opt/sysbench/threads/results/$run
+
+benchmark-start
+
+sysbench --test=threads --thread-yields=${yields} --thread-locks=${locks} \
+run > /opt/sysbench/threads/results/$run/sysbench.log
+
+benchmark-finish
+
+# Parse the results
+`cat /opt/sysbench/threads/results/$run/sysbench.log | python $CHARM_DIR/actions/threads2json.py`

@@ -105,15 +105,6 @@ cpu:
             description: Upper limit for primes generator
             type: string
             default: "20000"
-# memory:
-#     description:
-#     params:
-# threads:
-#     description:
-#     params:
-# mutex:
-#     description:
-#     params:
 oltp:
     description: Benchmark database performance
     params:
@@ -231,3 +222,33 @@ oltp:
             description: Additonal options passed to CREATE TABLE
             type: string
             default: ""
+threads:
+    description: Benchmark scheduler performance
+    params:
+        yields:
+            description: The number of lock/yield/unlock loops per request
+            type: integer
+            default: 1000
+        locks:
+            description: The number of mutexes to create
+            type: integer
+            default: 8
+mutex:
+    description: Benchmark the performance of mutex implementations
+    params:
+        num:
+            description: The number of mutexes.
+            type: integer
+            default: 4096
+        scope:
+            description: The type of memory block each thread will use - global or local
+            type: string
+            default: "global"
+        size:
+            description: The total size of data to transfer
+            type: string
+            default: "100G"
+        oper:
+            description: The type of memory operations - read or write
+            type: string
+            default: "read"

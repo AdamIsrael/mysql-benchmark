@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -eux
+
+num=`action-get num`
+scope=`action-get scope`
+size=`action-get size`
+oper=`action-get oper`
+
+run=`date +%s`
+
+mkdir -p /opt/sysbench/mutex/results/$run
+
+benchmark-start
+
+sysbench --test=mutex --mutex-num=${num} --memory-scope=${scope} \
+--memory-total-size=${size} --memory-oper=${oper} \
+run > /opt/sysbench/mutex/results/$run/sysbench.log
+
+benchmark-finish
+
+# Parse the results
+`cat /opt/sysbench/mutex/results/$run/sysbench.log | python $CHARM_DIR/actions/mutex2json.py`
