@@ -44,8 +44,17 @@ run=`date +%s`
 
 mkdir -p /opt/sysbench/oltp/results/$run
 
+# This is the only percona-specific sysbench test that needs to be changed
+# but there may be some percona-only tests to add in the future.
+TESTNAME=oltp
+. actions/common
+
+if [ is_percona ]; then
+    TESTNAME=/usr/share/doc/sysbench/tests/db/oltp.lua
+fi
+
 cleanup() {
-    sysbench --test=oltp --mysql-host=${host} --mysql-user=${user} \
+    sysbench --test=${TESTNAME} --mysql-host=${host} --mysql-user=${user} \
     --mysql-db=${database} --mysql-password=${password} cleanup
 }
 
@@ -53,14 +62,14 @@ cleanup() {
 cleanup || true
 
 # Prepare the test
-sysbench --test=oltp --mysql-host=${host} --mysql-user=${user} \
+sysbench --test=${TESTNAME} --mysql-host=${host} --mysql-user=${user} \
 --mysql-db=${database} --mysql-password=${password} prepare
 
 
 # Run the test
 benchmark-start
 
-sysbench --test=oltp --oltp-test-mode=${testmode} --oltp-read-only=${readonly} \
+sysbench --test=${TESTNAME} --oltp-test-mode=${testmode} --oltp-read-only=${readonly} \
 --oltp-range-size=${rangesize} --oltp-point-selects=${pointselects} \
 --oltp-simple-ranges=${simpleranges} --oltp-sum-ranges=${sumranges} \
 --oltp-order-ranges=${orderranges} --oltp-distinct-ranges=${distinctranges} \
