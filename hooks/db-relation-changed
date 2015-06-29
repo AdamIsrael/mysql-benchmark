@@ -13,10 +13,8 @@ def db_relation_changed():
     db_pass = relation_get('password')
     db_name = relation_get('database')
     db_host = relation_get('host')
-    db_port = relation_get('port')
 
     cfg = config()
-
     cfg['user'] = db_user
     cfg['password'] = db_pass
     cfg['database'] = db_name

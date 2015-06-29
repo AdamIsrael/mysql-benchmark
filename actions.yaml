@@ -1,110 +1,110 @@
-fileio:
-    description: file io
-    params:
-        num-threads:
-            description: Tht total number of worker threads to create
-            type: integer
-            default: 1
-        max-requests:
-            description: Limit the total number of requests. 0 for unlimited.
-            type: integer
-            default: 10000
-        max-time:
-            description: Limit the total execution time, in seconds.
-            type: integer
-            default: 0
-        thread-stack-size:
-            description: Size of stack for each thread
-            type: string
-            default: "32K"
-        init-rnd:
-            description: |
-                Specify if the random numbers generator should be initialized from
-                timer before the test start
-            type: string
-            default: 'off'
-        num:
-            description: Number of blocks to create
-            type: integer
-            default: 128
-        block-size:
-            description: Block size to use in all IO operations
-            type: integer
-            default: 16384
-        total-size:
-            description: Total size of files to create
-            type: string
-            default: "2G"
-        test-mode:
-            description: Test mode (seqwr, seqrewr, seqrd, rndrd, rndwr, rndrw)
-            type: string
-            default: "rndrw"
-        io-mode:
-            description: File operations mode (sync, async, fastmmap, slowmmap)
-            type: string
-            default: "sync"
-        async-backlog:
-            description: Number of asyncronous operations to queue per thread (only if io-mode=async)
-            type: integer
-            default: 128
-        extra-flags:
-            description: Additional flags to use on opening files (sync, dsync, direct)
-            type: string
-            default: ""
-        fsync-freq:
-            description: Do fsync() after this number of requests (0 to disable)
-            type: integer
-            default: 100
-        fsync-all:
-            description: Do fsync() after each write operation
-            type: boolean
-            default: false
-        fsync-end:
-            description: Do fsync() at the end of the test
-            type: boolean
-            default: true
-        fsync-mode:
-            description: Which method to use for syncronization (fsync, fdatasync)
-            type: string
-            default: "fsync"
-        merged-requests:
-            description: Merge at most this number of IO requests if possible (0 to disable)
-            type: integer
-            default: 0
-        rw-ratio:
-            description: Reads/writes ratio for combined test
-            type: string
-            default: "1.5"
-cpu:
-    description: CPU
-    params:
-        num-threads:
-            description: Tht total number of worker threads to create
-            type: integer
-            default: 1
-        max-requests:
-            description: Limit the total number of requests. 0 for unlimited.
-            type: integer
-            default: 10000
-        max-time:
-            description: Limit the total execution time, in seconds.
-            type: integer
-            default: 0
-        thread-stack-size:
-            description: Size of stack for each thread
-            type: string
-            default: "32K"
-        init-rnd:
-            description: |
-                Specify if the random numbers generator should be initialized from
-                timer before the test start
-            type: string
-            default: 'off'
-
-        max-prime:
-            description: Upper limit for primes generator
-            type: string
-            default: "20000"
+# fileio:
+#     description: file io
+#     params:
+#         num-threads:
+#             description: Tht total number of worker threads to create
+#             type: integer
+#             default: 1
+#         max-requests:
+#             description: Limit the total number of requests. 0 for unlimited.
+#             type: integer
+#             default: 10000
+#         max-time:
+#             description: Limit the total execution time, in seconds.
+#             type: integer
+#             default: 0
+#         thread-stack-size:
+#             description: Size of stack for each thread
+#             type: string
+#             default: "32K"
+#         init-rnd:
+#             description: |
+#                 Specify if the random numbers generator should be initialized from
+#                 timer before the test start
+#             type: string
+#             default: 'off'
+#         num:
+#             description: Number of blocks to create
+#             type: integer
+#             default: 128
+#         block-size:
+#             description: Block size to use in all IO operations
+#             type: integer
+#             default: 16384
+#         total-size:
+#             description: Total size of files to create
+#             type: string
+#             default: "2G"
+#         test-mode:
+#             description: Test mode (seqwr, seqrewr, seqrd, rndrd, rndwr, rndrw)
+#             type: string
+#             default: "rndrw"
+#         io-mode:
+#             description: File operations mode (sync, async, fastmmap, slowmmap)
+#             type: string
+#             default: "sync"
+#         async-backlog:
+#             description: Number of asyncronous operations to queue per thread (only if io-mode=async)
+#             type: integer
+#             default: 128
+#         extra-flags:
+#             description: Additional flags to use on opening files (sync, dsync, direct)
+#             type: string
+#             default: ""
+#         fsync-freq:
+#             description: Do fsync() after this number of requests (0 to disable)
+#             type: integer
+#             default: 100
+#         fsync-all:
+#             description: Do fsync() after each write operation
+#             type: boolean
+#             default: false
+#         fsync-end:
+#             description: Do fsync() at the end of the test
+#             type: boolean
+#             default: true
+#         fsync-mode:
+#             description: Which method to use for syncronization (fsync, fdatasync)
+#             type: string
+#             default: "fsync"
+#         merged-requests:
+#             description: Merge at most this number of IO requests if possible (0 to disable)
+#             type: integer
+#             default: 0
+#         rw-ratio:
+#             description: Reads/writes ratio for combined test
+#             type: string
+#             default: "1.5"
+# cpu:
+#     description: CPU
+#     params:
+#         num-threads:
+#             description: Tht total number of worker threads to create
+#             type: integer
+#             default: 1
+#         max-requests:
+#             description: Limit the total number of requests. 0 for unlimited.
+#             type: integer
+#             default: 10000
+#         max-time:
+#             description: Limit the total execution time, in seconds.
+#             type: integer
+#             default: 0
+#         thread-stack-size:
+#             description: Size of stack for each thread
+#             type: string
+#             default: "32K"
+#         init-rnd:
+#             description: |
+#                 Specify if the random numbers generator should be initialized from
+#                 timer before the test start
+#             type: string
+#             default: 'off'
+#
+#         max-prime:
+#             description: Upper limit for primes generator
+#             type: string
+#             default: "20000"
 oltp:
     description: Benchmark database performance
     params:
@@ -222,33 +222,33 @@ oltp:
             description: Additonal options passed to CREATE TABLE
             type: string
             default: ""
-threads:
-    description: Benchmark scheduler performance
-    params:
-        yields:
-            description: The number of lock/yield/unlock loops per request
-            type: integer
-            default: 1000
-        locks:
-            description: The number of mutexes to create
-            type: integer
-            default: 8
-mutex:
-    description: Benchmark the performance of mutex implementations
-    params:
-        num:
-            description: The number of mutexes.
-            type: integer
-            default: 4096
-        scope:
-            description: The type of memory block each thread will use - global or local
-            type: string
-            default: "global"
-        size:
-            description: The total size of data to transfer
-            type: string
-            default: "100G"
-        oper:
-            description: The type of memory operations - read or write
-            type: string
-            default: "read"
+# threads:
+#     description: Benchmark scheduler performance
+#     params:
+#         yields:
+#             description: The number of lock/yield/unlock loops per request
+#             type: integer
+#             default: 1000
+#         locks:
+#             description: The number of mutexes to create
+#             type: integer
+#             default: 8
+# mutex:
+#     description: Benchmark the performance of mutex implementations
+#     params:
+#         num:
+#             description: The number of mutexes.
+#             type: integer
+#             default: 4096
+#         scope:
+#             description: The type of memory block each thread will use - global or local
+#             type: string
+#             default: "global"
+#         size:
+#             description: The total size of data to transfer
+#             type: string
+#             default: "100G"
+#         oper:
+#             description: The type of memory operations - read or write
+#             type: string
+#             default: "read"

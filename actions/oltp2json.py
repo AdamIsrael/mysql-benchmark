@@ -37,7 +37,7 @@ def parse_sysbench_output():
     for key in results:
         Benchmark.set_data({"results.%s" % key: results[key]})
 
-    Benchmark.set_composite_score(results['95th'], '95th %', 'asc')
+    Benchmark.set_composite_score(results['95th'], '', 'asc')
 
 if __name__ == "__main__":
     parse_sysbench_output()
