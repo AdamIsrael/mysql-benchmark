@@ -1,9 +1,5 @@
 
 is_percona() {
     dpkg-query -l percona-server-server
-    if [ $? -eq 0 ]; then
-        return 1
-    else
-        return 0
-    fi
+    return $?
 }
