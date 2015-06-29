@@ -49,7 +49,7 @@ mkdir -p /opt/sysbench/oltp/results/$run
 TESTNAME=oltp
 . actions/common
 
-if [ is_percona ]; then
+if is_percona; then
     TESTNAME=/usr/share/doc/sysbench/tests/db/oltp.lua
 fi
 
@@ -64,7 +64,6 @@ cleanup || true
 # Prepare the test
 sysbench --test=${TESTNAME} --mysql-host=${host} --mysql-user=${user} \
 --mysql-db=${database} --mysql-password=${password} prepare
-
 
 # Run the test
 benchmark-start
@@ -85,10 +84,13 @@ sysbench --test=${TESTNAME} --oltp-test-mode=${testmode} --oltp-read-only=${read
 --mysql-create-options=${mysqlcreateoptions} \
 run > /opt/sysbench/oltp/results/$run/sysbench.log
 
-benchmark-finish
+benchmark-finish || true
 
 # Cleanup after the test
-cleanup
+cleanup || true
 
-# Parse the results
+# Log the raw results
+benchmark-raw /opt/sysbench/oltp/results/$run/sysbench.log
+
+# Parse and log the results in a human-readable format
 `cat /opt/sysbench/oltp/results/$run/sysbench.log | python $CHARM_DIR/actions/oltp2json.py`
