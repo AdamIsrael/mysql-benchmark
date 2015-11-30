@@ -1,14 +1,22 @@
 #!/usr/bin/env python
 from charmhelpers.core.hookenv import (
     config,
-    relation_get
+    relation_get,
+    status_set
 )
-
+import urllib
+import tarfile
+import subprocess
+import os.path
+import shlex
 
 def db_relation_changed():
     if relation_get('database') is None:
+        status_set('blocked', 'Waiting for database.')
+
         return 0
 
+    status_set('maintenance', 'Setting up db relation')
     db_user = relation_get('user')
     db_pass = relation_get('password')
     db_name = relation_get('database')
@@ -21,6 +29,28 @@ def db_relation_changed():
     cfg['host'] = db_host
     cfg.save()
 
+    # This might be a good idea, but the restricted permissions provided
+    # by the mysql charm means we need to either massage the sql dump
+    # to not drop/create the database, or find a different database dump.
+
+    # Load test data
+    # if not os.path.isfile("/tmp/employees_db-full-1.0.6.tar.bz2"):
+    #     status_set('maintenance', 'Downloading test data.')
+    #     urllib.urlretrieve(
+    #         "https://launchpad.net/test-db/employees-db-1/1.0.6/+download/employees_db-full-1.0.6.tar.bz2",
+    #         "/tmp/employees_db-full-1.0.6.tar.bz2"
+    #     )
+    #
+    #     if not os.path.isfile("/tmp/employees_db/employees.sql"):
+    #         status_set('maintenance', 'Extracting employees database')
+    #         with tarfile.open("/tmp/employees_db-full-1.0.6.tar.bz2") as tar:
+    #             tar.extract('employees_db/employees.sql', '/tmp')
+    #
+    # status_set('maintenance', 'Importing database.')
+    # args = shlex.split("mysql -h ${0} -t --user=${1} --password=${2} {3} < /tmp/employees_db/employees.sql".format(db_host, db_user, db_pass, db_name))
+    # subprocess.call(args)
+
+    status_set('active', 'Ready!')
 
 if __name__ == "__main__":
     db_relation_changed()
