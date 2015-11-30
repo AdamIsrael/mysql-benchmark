@@ -2,7 +2,14 @@
 set -eux
 
 apt-get update
-apt-get install -y sysbench python-pip
+# mysql-testsuite?
+apt-get install -y python-pip mysql-client
 pip install -U charmhelpers
-pip install -U charm-benchmark
+pip install -U charms.benchmark
 pip install -U shyaml
+
+# Install sysbench from Percona's repo; it's more current than our package
+
+wget http://repo.percona.com/apt/pool/main/s/sysbench/sysbench_0.5-3.trusty_amd64.deb
+dpkg -i sysbench_0.5-3.trusty_amd64.deb
+rm sysbench_0.5-3.trusty_amd64.deb
