@@ -108,14 +108,22 @@
 oltp:
     description: Benchmark database performance
     params:
+        prepare:
+            description: Prepare the database for testing
+            type: boolean
+            default: true
+        cleanup:
+            description: Cleanup the database after testing
+            type: boolean
+            default: true
         num-threads:
-            description: Tht total number of worker threads to create
+            description: The total number of worker threads to create
             type: integer
             default: 1
         max-requests:
             description: Limit the total number of requests. 0 for unlimited.
-            type: integer
-            default: 10000
+            type: string
+            default: "1000000"
         max-time:
             description: Limit the total execution time, in seconds.
             type: integer
@@ -136,8 +144,8 @@ oltp:
             default: "complex"
         read-only:
             description: Read-only mode. No UPDATE, DELETE, or INSERT queries will be performed
-            type: boolean
-            default: False
+            type: string
+            default: "off"
         range-size:
             description: Range size for range queries.
             type: integer
@@ -192,8 +200,12 @@ oltp:
             default: "sbtest"
         table-size:
             description: Number of rows in the test table
+            type: string
+            default: "1000000"
+        tables-count:
+            description: The number of tables to benchmark against
             type: integer
-            default: 10000
+            default: 25
         dist-type:
             description: Distribution of random numbers - uniform, gauss, or special
             type: string
@@ -252,3 +264,26 @@ oltp:
 #             description: The type of memory operations - read or write
 #             type: string
 #             default: "read"
+dd:
+    description: "Benchmark I/O performance using dd"
+    params:
+        if:
+            type: string
+            default: "/dev/zero"
+            description: ""
+        of:
+            type: string
+            default: "/srv/data/testfile"
+            description: ""
+        bs:
+            type: string
+            default: "1G"
+            description: ""
+        count:
+            type: integer
+            default: 1
+            description: ""
+        oflag:
+            type: string
+            default: "direct"
+            description: ""
