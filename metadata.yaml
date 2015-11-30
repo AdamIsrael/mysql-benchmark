@@ -7,11 +7,10 @@ tags:
   # Replace "misc" with one or more whitelisted tags from this list:
   # https://juju.ubuntu.com/docs/authors-charm-metadata.html#charm-metadata
   - misc
-subordinate: true
+subordinate: false
 requires:
   db:
     interface: mysql
-    scope: container
 provides:
   benchmark:
     interface: benchmark
