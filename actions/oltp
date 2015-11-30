@@ -4,8 +4,16 @@ set -eux
 
 maxprime=`action-get max-prime`
 threads=`action-get num-threads`
+
 requests=`action-get max-requests`
 maxtime=`action-get max-time`
+
+# This is a bit of a hack, since requests is a string (a bug workaround)
+# and won't accept a 0 value
+if [ maxtime > 0 ]; then
+    requests=0
+fi
+
 stacksize=`action-get thread-stack-size`
 rnd=`action-get init-rnd`
 
@@ -25,6 +33,7 @@ userdelaymin=`action-get user-delay-min`
 userdelaymax=`action-get user-delay-max`
 tablename=`action-get table-name`
 tablesize=`action-get table-size`
+tablecount=`action-get tables-count`
 disttype=`action-get dist-type`
 distpct=`action-get dist-pct`
 distres=`action-get dist-res`
@@ -33,6 +42,10 @@ dbpsmode=`action-get db-ps-mode`
 mysqltableengine=`action-get mysql-table-engine`
 myisammaxrows=`action-get myisam-max-rows`
 mysqlcreateoptions=`action-get mysql-create-options`
+
+##
+cleanup=`action-get cleanup`
+prepare=`action-get prepare`
 
 database=`cat .juju-persistent-config | shyaml get-value database`
 host=`cat .juju-persistent-config | shyaml get-value host`
@@ -49,26 +62,31 @@ mkdir -p /opt/sysbench/oltp/results/$run
 TESTNAME=oltp
 . actions/common
 
-if is_percona; then
-    TESTNAME=/usr/share/doc/sysbench/tests/db/oltp.lua
-fi
+#if is_percona; then
+TESTNAME=/usr/share/doc/sysbench/tests/db/oltp.lua
+#fi
 
 cleanup() {
     sysbench --test=${TESTNAME} --mysql-host=${host} --mysql-user=${user} \
+    --oltp-tables-count=${tablecount} \
     --mysql-db=${database} --mysql-password=${password} cleanup
 }
 
-# Cleanup from a failed test run
-cleanup || true
-
 # Prepare the test
-sysbench --test=${TESTNAME} --mysql-host=${host} --mysql-user=${user} \
+if [ ${prepare,,} = 'true' ]; then
+    # Always cleanup before a prepare
+    cleanup || true
+
+    sysbench --test=${TESTNAME} --mysql-host=${host} --mysql-user=${user} \
+--oltp-table-size=${tablesize} --oltp-tables-count=${tablecount} \
 --mysql-db=${database} --mysql-password=${password} prepare
+fi
 
 # Run the test
 benchmark-start
 
-sysbench --test=${TESTNAME} --oltp-test-mode=${testmode} --oltp-read-only=${readonly} \
+time sysbench --num-threads=${threads} --test=${TESTNAME} \
+--oltp-test-mode=${testmode} --oltp-read-only=${readonly} \
 --oltp-range-size=${rangesize} --oltp-point-selects=${pointselects} \
 --oltp-simple-ranges=${simpleranges} --oltp-sum-ranges=${sumranges} \
 --oltp-order-ranges=${orderranges} --oltp-distinct-ranges=${distinctranges} \
@@ -77,6 +95,7 @@ sysbench --test=${TESTNAME} --oltp-test-mode=${testmode} --oltp-read-only=${read
 --oltp-connect-delay=${connectdelay} --oltp-user-delay-min=${userdelaymin} \
 --oltp-user-delay-max=${userdelaymax} --oltp-table-name=${tablename} \
 --oltp-table-size=${tablesize} --oltp-dist-type=${disttype} \
+--oltp-tables-count=${tablecount} \
 --oltp-dist-pct=${distpct} --oltp-dist-res=${distres} --db-ps-mode=${dbpsmode} \
 --mysql-host=${host} --mysql-user=${user} --mysql-db=${database} \
 --mysql-password=${password} --mysql-table-engine=${mysqltableengine} \
@@ -87,7 +106,9 @@ run > /opt/sysbench/oltp/results/$run/sysbench.log
 benchmark-finish || true
 
 # Cleanup after the test
-cleanup || true
+if [ ${cleanup,,} = 'true' ]; then
+    cleanup || true
+fi
 
 # Log the raw results
 benchmark-raw /opt/sysbench/oltp/results/$run/sysbench.log
